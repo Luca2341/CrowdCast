@@ -7,62 +7,110 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
 <style>
-body{
+
+*{
   margin:0;
+  padding:0;
+  box-sizing:border-box;
   font-family:Inter;
-  background:#040814;
-  color:white;
 }
 
-.nav{
-  position:fixed;
-  top:0;
-  width:100%;
+body{
+  background:#0b0f1a;
+  color:white;
   display:flex;
-  justify-content:space-between;
-  padding:20px 7%;
-  background:rgba(0,0,0,0.4);
-  backdrop-filter:blur(10px);
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  height:100vh;
+  background:#0f172a;
+  padding:20px;
+  position:fixed;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
 }
 
 .logo{
-  font-weight:900;
   font-size:22px;
+  font-weight:900;
+  margin-bottom:20px;
 }
 
-.nav-right a{
-  margin-left:15px;
-  color:white;
-  text-decoration:none;
-  font-weight:600;
-}
-
-.btn{
-  padding:10px 16px;
+.nav-item{
+  padding:10px;
   border-radius:10px;
   cursor:pointer;
+  color:#cbd5e1;
+}
+
+.nav-item:hover{
+  background:#1e293b;
+}
+
+/* MAIN */
+.main{
+  margin-left:240px;
+  width:100%;
+  padding:30px;
+}
+
+/* TOPBAR */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+button{
+  padding:10px 14px;
   border:none;
+  border-radius:10px;
+  cursor:pointer;
   font-weight:700;
 }
 
-.primary{background:#15a8ff;color:white;}
-
-.hero{
-  padding:140px 7%;
-  text-align:center;
+.primary{
+  background:#15a8ff;
+  color:white;
 }
 
-h1{
-  font-size:4rem;
+/* PAGES */
+.page{
+  display:none;
 }
 
-.hidden{display:none;}
+.active{
+  display:block;
+}
 
+/* STREAM CARD */
+.card{
+  background:#111827;
+  padding:15px;
+  border-radius:14px;
+  margin:10px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+/* BADGE */
+.badge{
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+  background:#ff2d55;
+}
+
+/* LOGIN */
 .modal{
   position:fixed;
   inset:0;
@@ -73,7 +121,7 @@ h1{
 }
 
 .modal-box{
-  background:#111;
+  background:#111827;
   padding:20px;
   border-radius:12px;
   width:300px;
@@ -81,45 +129,58 @@ h1{
 
 input{
   width:100%;
-  margin:8px 0;
   padding:10px;
+  margin:8px 0;
+  border-radius:8px;
+  border:none;
 }
+
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
-<div class="nav">
+<!-- SIDEBAR -->
+<div class="sidebar">
+
   <div class="logo">CrowdCast</div>
 
-  <div class="nav-right">
-    <a href="#" onclick="openLogin()">Login</a>
-    <a href="#" id="logoutBtn" class="hidden" onclick="logout()">Logout</a>
+  <div class="nav-item" onclick="showPage('home')">🏠 Home</div>
+  <div class="nav-item" onclick="showPage('streams')">🔴 Live</div>
+  <div class="nav-item" onclick="showPage('create')">🎥 Go Live</div>
+  <div class="nav-item" onclick="openLogin()">👤 Login</div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="topbar">
+    <h2 id="title">Home</h2>
+    <button class="primary" onclick="logout()">Logout</button>
   </div>
+
+  <!-- HOME -->
+  <div id="home" class="page active">
+    <h1>Willkommen bei CrowdCast 🎥</h1>
+    <p>Live Stadion Streams von echten Fans.</p>
+  </div>
+
+  <!-- STREAMS -->
+  <div id="streams" class="page">
+    <h2>Live Streams 🔴</h2>
+    <div id="streamsContainer"></div>
+  </div>
+
+  <!-- CREATE -->
+  <div id="create" class="page">
+    <h2>Go Live 🎥</h2>
+    <button class="primary" onclick="createStream()">Stream starten</button>
+  </div>
+
 </div>
 
-<!-- HERO -->
-<div class="hero" id="home">
-  <h1>Feel the Crowd</h1>
-  <p>Live Sports aus der Fan-Perspektive</p>
-  <button class="btn primary" onclick="openLogin()">Get Started</button>
-</div>
-
-<!-- DASHBOARD -->
-<div class="hero hidden" id="dashboard">
-  
-  <h1>Dashboard</h1>
-
-  <h2>Live Streams</h2>
-
-  <button onclick="createStream()">+ Stream erstellen</button>
-
-  <div id="streamsContainer"></div>
-
-</div>
-
-<!-- LOGIN MODAL -->
+<!-- LOGIN -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
     <h3>Login</h3>
@@ -127,21 +188,31 @@ input{
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Passwort">
 
-    <button class="btn primary" onclick="signUp()">Registrieren</button>
-    <button class="btn primary" onclick="signIn()">Einloggen</button>
-    <button class="btn" onclick="closeLogin()">Schließen</button>
+    <button class="primary" onclick="signIn()">Login</button>
+    <button onclick="signUp()">Register</button>
+    <button onclick="closeLogin()">Close</button>
   </div>
 </div>
 
 <script>
 
-// 🔑 SUPABASE EINTRAGEN
+/* SUPABASE */
 const supabaseUrl = "https://ujtzhllmkclhibybfhae.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
-
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// UI
+/* NAVIGATION */
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+  document.getElementById('title').innerText = page.toUpperCase();
+
+  if(page === "streams"){
+    loadStreams();
+  }
+}
+
+/* LOGIN */
 function openLogin(){
   document.getElementById("loginModal").style.display = "flex";
 }
@@ -150,111 +221,90 @@ function closeLogin(){
   document.getElementById("loginModal").style.display = "none";
 }
 
-// REGISTER
+/* AUTH */
+async function signIn(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email, password
+  });
+
+  if(error) alert(error.message);
+  else closeLogin();
+}
+
 async function signUp(){
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   const { error } = await supabaseClient.auth.signUp({
-    email,
-    password
+    email, password
   });
 
-  if(error){
-    alert(error.message);
-  } else {
-    alert("Account erstellt!");
-  }
+  if(error) alert(error.message);
+  else alert("Account erstellt 🚀");
 }
 
-// LOGIN
-async function signIn(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if(error){
-    alert(error.message);
-  } else {
-    updateUI();
-    closeLogin();
-  }
-}
-
-// LOGOUT
 async function logout(){
   await supabaseClient.auth.signOut();
-  updateUI();
 }
 
-// UI SWITCH
-async function updateUI(){
-  const { data } = await supabaseClient.auth.getUser();
+/* STREAMS */
+async function createStream(){
+  const title = prompt("Stream Titel:");
+  const description = prompt("Beschreibung:");
 
-  if(data.user){
-    document.getElementById("home").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    document.getElementById("logoutBtn").classList.remove("hidden");
-  } else {
-    document.getElementById("home").classList.remove("hidden");
-    document.getElementById("dashboard").classList.add("hidden");
-    document.getElementById("logoutBtn").classList.add("hidden");
-  }
-}
+  const { data: user } = await supabaseClient.auth.getUser();
 
-updateUI();
-
-</script>
-async function loadStreams() {
-  const { data, error } = await supabaseClient
-    .from("streams")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.log(error);
+  if(!user.user){
+    alert("Bitte einloggen");
     return;
   }
+
+  await supabaseClient.from("streams").insert([
+    {
+      title,
+      description,
+      user_id: user.user.id,
+      is_live: true
+    }
+  ]);
+
+  loadStreams();
+}
+
+async function loadStreams(){
+
+  const { data } = await supabaseClient
+    .from("streams")
+    .select("*")
+    .order("created_at",{ascending:false});
 
   const container = document.getElementById("streamsContainer");
   container.innerHTML = "";
 
   data.forEach(stream => {
-    const card = document.createElement("div");
 
-    card.style.background = "linear-gradient(180deg,#0f172a,#0b1220)";
-    card.style.padding = "18px";
-    card.style.margin = "12px 0";
-    card.style.borderRadius = "16px";
-    card.style.border = "1px solid rgba(255,255,255,0.08)";
-    card.style.cursor = "pointer";
+    const card = document.createElement("div");
+    card.className = "card";
 
     card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="margin:0;">${stream.title}</h3>
-        <span style="
-          padding:6px 10px;
-          border-radius:999px;
-          font-size:12px;
-          background:${stream.is_live ? '#ff2d55' : '#333'};
-          color:white;
-          font-weight:700;
-        ">
-          ${stream.is_live ? "LIVE 🔴" : "OFFLINE"}
-        </span>
+      <div>
+        <h3>${stream.title}</h3>
+        <p style="color:#94a3b8">${stream.description || ""}</p>
       </div>
 
-      <p style="color:#9aa4b2;margin-top:8px;">
-        ${stream.description || "Kein Beschreibungstext"}
-      </p>
+      <div class="badge">
+        ${stream.is_live ? "LIVE 🔴" : "OFFLINE"}
+      </div>
     `;
 
     container.appendChild(card);
   });
 }
+
+</script>
+
 </body>
 </html>
