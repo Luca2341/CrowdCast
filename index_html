@@ -18,8 +18,8 @@
 
 <script>
 
-const supabaseUrl = "DEINE_URL";
-const supabaseKey = "DEIN_KEY";
+const supabaseUrl = "https://ujtzhllmkclhibybfhae.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 let stream;
