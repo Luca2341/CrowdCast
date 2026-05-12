@@ -7,7 +7,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 
@@ -19,27 +19,38 @@
 }
 
 body{
-  background:#0b0f1a;
+  background:#0a0f1c;
   color:white;
   display:flex;
 }
 
 /* SIDEBAR */
 .sidebar{
-  width:240px;
+  width:250px;
   height:100vh;
-  background:#0f172a;
-  padding:20px;
   position:fixed;
+  background:#0f172a;
+  padding:22px;
   display:flex;
   flex-direction:column;
   gap:14px;
+  border-right:1px solid rgba(255,255,255,0.05);
 }
 
 .logo{
-  font-size:22px;
+  font-size:24px;
   font-weight:900;
-  margin-bottom:20px;
+  letter-spacing:-1px;
+}
+
+.logo span{
+  color:#15a8ff;
+}
+
+.tagline{
+  font-size:12px;
+  color:#94a3b8;
+  margin-bottom:10px;
 }
 
 .nav-item{
@@ -47,6 +58,8 @@ body{
   border-radius:10px;
   cursor:pointer;
   color:#cbd5e1;
+  font-weight:600;
+  transition:0.2s;
 }
 
 .nav-item:hover{
@@ -55,7 +68,7 @@ body{
 
 /* MAIN */
 .main{
-  margin-left:240px;
+  margin-left:250px;
   width:100%;
   padding:30px;
 }
@@ -65,7 +78,7 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:20px;
+  margin-bottom:25px;
 }
 
 button{
@@ -77,7 +90,7 @@ button{
 }
 
 .primary{
-  background:#15a8ff;
+  background:linear-gradient(135deg,#15a8ff,#0066ff);
   color:white;
 }
 
@@ -90,10 +103,29 @@ button{
   display:block;
 }
 
+/* HOME */
+.hero{
+  background:linear-gradient(135deg,#0f172a,#0b1220);
+  padding:30px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.06);
+  margin-bottom:20px;
+}
+
+.hero h1{
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  color:#94a3b8;
+  line-height:1.6;
+}
+
 /* STREAM CARD */
 .card{
   background:#111827;
-  padding:15px;
+  padding:16px;
   border-radius:14px;
   margin:10px 0;
   display:flex;
@@ -102,12 +134,36 @@ button{
   border:1px solid rgba(255,255,255,0.06);
 }
 
-/* BADGE */
 .badge{
-  padding:5px 10px;
+  padding:6px 12px;
   border-radius:999px;
   font-size:12px;
   background:#ff2d55;
+  font-weight:700;
+}
+
+/* INFO BOX */
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+  margin-top:20px;
+}
+
+.info-box{
+  background:#0f172a;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.05);
+}
+
+.info-box h3{
+  margin-bottom:6px;
+}
+
+.info-box p{
+  font-size:13px;
+  color:#94a3b8;
 }
 
 /* LOGIN */
@@ -123,8 +179,8 @@ button{
 .modal-box{
   background:#111827;
   padding:20px;
-  border-radius:12px;
-  width:300px;
+  border-radius:14px;
+  width:320px;
 }
 
 input{
@@ -133,6 +189,13 @@ input{
   margin:8px 0;
   border-radius:8px;
   border:none;
+  background:#0b1220;
+  color:white;
+}
+
+.small{
+  font-size:12px;
+  color:#94a3b8;
 }
 
 </style>
@@ -143,10 +206,11 @@ input{
 <!-- SIDEBAR -->
 <div class="sidebar">
 
-  <div class="logo">CrowdCast</div>
+  <div class="logo">Crowd<span>Cast</span></div>
+  <div class="tagline">Live Sports from the Crowd</div>
 
   <div class="nav-item" onclick="showPage('home')">🏠 Home</div>
-  <div class="nav-item" onclick="showPage('streams')">🔴 Live</div>
+  <div class="nav-item" onclick="showPage('streams')">🔴 Live Games</div>
   <div class="nav-item" onclick="showPage('create')">🎥 Go Live</div>
   <div class="nav-item" onclick="openLogin()">👤 Login</div>
 
@@ -162,20 +226,56 @@ input{
 
   <!-- HOME -->
   <div id="home" class="page active">
-    <h1>Willkommen bei CrowdCast 🎥</h1>
-    <p>Live Stadion Streams von echten Fans.</p>
+
+    <div class="hero">
+      <h1>Watch Sports from the Crowd 🎥</h1>
+      <p>
+        CrowdCast ist eine neue Sport-Streaming-Plattform, auf der echte Fans direkt aus dem Stadion live senden.
+        Keine Studio-Kameras – nur echte Emotionen aus der Kurve.
+      </p>
+    </div>
+
+    <div class="info-grid">
+
+      <div class="info-box">
+        <h3>📱 Live aus dem Stadion</h3>
+        <p>Fans streamen direkt aus dem Stadion und zeigen das Spiel aus ihrer Perspektive.</p>
+      </div>
+
+      <div class="info-box">
+        <h3>🔴 Echtzeit</h3>
+        <p>Alle Streams laufen live ohne Verzögerung wie bei klassischen TV-Sendern.</p>
+      </div>
+
+      <div class="info-box">
+        <h3>👥 Community</h3>
+        <p>Folge deinen Lieblings-Fans und erlebe Spiele gemeinsam mit anderen.</p>
+      </div>
+
+    </div>
+
   </div>
 
   <!-- STREAMS -->
   <div id="streams" class="page">
-    <h2>Live Streams 🔴</h2>
+
+    <h2>Live Games 🔴</h2>
+    <p class="small">Streams von echten Fans aus Stadien weltweit</p>
+
     <div id="streamsContainer"></div>
+
   </div>
 
   <!-- CREATE -->
   <div id="create" class="page">
-    <h2>Go Live 🎥</h2>
-    <button class="primary" onclick="createStream()">Stream starten</button>
+
+    <div class="hero">
+      <h2>Go Live 🎥</h2>
+      <p>Starte einen Stream direkt aus dem Stadion oder vom Handy.</p>
+      <br>
+      <button class="primary" onclick="createStream()">Stream starten</button>
+    </div>
+
   </div>
 
 </div>
@@ -183,7 +283,9 @@ input{
 <!-- LOGIN -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
+
     <h3>Login</h3>
+    <p class="small">Zugang zu Streams & Creator Tools</p>
 
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Passwort">
@@ -191,6 +293,7 @@ input{
     <button class="primary" onclick="signIn()">Login</button>
     <button onclick="signUp()">Register</button>
     <button onclick="closeLogin()">Close</button>
+
   </div>
 </div>
 
@@ -201,7 +304,7 @@ const supabaseUrl = "https://ujtzhllmkclhibybfhae.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* NAVIGATION */
+/* NAV */
 function showPage(page){
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(page).classList.add('active');
@@ -252,6 +355,7 @@ async function logout(){
 
 /* STREAMS */
 async function createStream(){
+
   const title = prompt("Stream Titel:");
   const description = prompt("Beschreibung:");
 
@@ -262,14 +366,12 @@ async function createStream(){
     return;
   }
 
-  await supabaseClient.from("streams").insert([
-    {
-      title,
-      description,
-      user_id: user.user.id,
-      is_live: true
-    }
-  ]);
+  await supabaseClient.from("streams").insert([{
+    title,
+    description,
+    user_id: user.user.id,
+    is_live: true
+  }]);
 
   loadStreams();
 }
@@ -284,23 +386,23 @@ async function loadStreams(){
   const container = document.getElementById("streamsContainer");
   container.innerHTML = "";
 
-  data.forEach(stream => {
+  data.forEach(s => {
 
-    const card = document.createElement("div");
-    card.className = "card";
+    const div = document.createElement("div");
+    div.className = "card";
 
-    card.innerHTML = `
+    div.innerHTML = `
       <div>
-        <h3>${stream.title}</h3>
-        <p style="color:#94a3b8">${stream.description || ""}</p>
+        <h3>${s.title}</h3>
+        <p style="color:#94a3b8">${s.description || ""}</p>
       </div>
 
       <div class="badge">
-        ${stream.is_live ? "LIVE 🔴" : "OFFLINE"}
+        ${s.is_live ? "LIVE 🔴" : "OFFLINE"}
       </div>
     `;
 
-    container.appendChild(card);
+    container.appendChild(div);
   });
 }
 
