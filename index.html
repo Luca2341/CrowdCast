@@ -4,14 +4,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CrowdCast</title>
+<title>CrowdCast — Feel the Crowd</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -20,163 +19,118 @@
 
 body{
     font-family:'Inter',sans-serif;
-    background:#040814;
+    background:#050816;
     color:white;
     overflow-x:hidden;
 }
 
-body::before{
-    content:"";
-    position:fixed;
-    width:700px;
-    height:700px;
-    background:radial-gradient(circle,#1296ff22 0%,transparent 70%);
-    top:-250px;
-    right:-250px;
-    z-index:-1;
-}
-
-body::after{
-    content:"";
-    position:fixed;
-    width:600px;
-    height:600px;
-    background:radial-gradient(circle,#ff2d5520 0%,transparent 70%);
-    bottom:-250px;
-    left:-250px;
-    z-index:-1;
+.hero{
+    min-height:100vh;
+    background:
+    linear-gradient(to bottom, rgba(4,8,20,0.7), rgba(4,8,20,0.96)),
+    url('https://images.unsplash.com/photo-1517466787929-bc90951d0974?q=80&w=1800&auto=format&fit=crop') center/cover no-repeat;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px 20px;
+    position:relative;
 }
 
 .nav{
-    position:fixed;
-    width:100%;
+    position:absolute;
     top:0;
-    z-index:1000;
+    width:100%;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:24px 7%;
-    backdrop-filter:blur(18px);
-    background:rgba(4,8,20,0.55);
-    border-bottom:1px solid rgba(255,255,255,0.05);
+    padding:25px 8%;
 }
 
-.logo{
-    font-size:2rem;
+.brand{
+    font-size:1.8rem;
     font-weight:900;
     letter-spacing:-1px;
 }
 
-.logo span{
-    color:#15a8ff;
+.brand span{
+    color:#16a8ff;
 }
 
-.nav-right{
+.nav-buttons{
     display:flex;
-    align-items:center;
-    gap:16px;
-}
-
-.nav-link{
-    color:#c9d8ff;
-    text-decoration:none;
-    font-weight:600;
+    gap:14px;
 }
 
 .nav-btn{
     text-decoration:none;
-    padding:14px 24px;
-    border-radius:14px;
-    font-weight:700;
-    transition:0.3s;
+    color:white;
+    padding:12px 22px;
+    border-radius:12px;
+    font-weight:600;
 }
 
 .login{
-    border:1px solid rgba(255,255,255,0.08);
-    color:white;
+    border:1px solid rgba(255,255,255,0.15);
 }
 
 .signup{
-    background:linear-gradient(135deg,#15a8ff,#0066ff);
+    background:#16a8ff;
+}
+
+.live{
+    background:#ff2d55;
     color:white;
-    box-shadow:0 0 30px rgba(21,168,255,0.35);
-}
-
-.hero{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    padding:140px 7% 80px;
-    gap:60px;
-    position:relative;
-}
-
-.hero-left{
-    flex:1;
-}
-
-.live-pill{
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    background:rgba(255,45,85,0.14);
-    border:1px solid rgba(255,45,85,0.25);
-    color:#ff5b7d;
-    padding:10px 18px;
+    padding:8px 18px;
     border-radius:999px;
     font-size:0.9rem;
     font-weight:700;
-    margin-bottom:28px;
-}
-
-.dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#ff2d55;
-    box-shadow:0 0 15px #ff2d55;
+    margin-bottom:25px;
+    box-shadow:0 0 25px rgba(255,45,85,0.5);
 }
 
 h1{
-    font-size:6.5rem;
-    line-height:0.95;
+    font-size:6rem;
     font-weight:900;
     letter-spacing:-4px;
-    margin-bottom:28px;
+    margin-bottom:20px;
+    line-height:0.95;
 }
 
 .gradient{
-    background:linear-gradient(90deg,#ffffff,#6bc4ff);
+    background:linear-gradient(90deg,#ffffff,#69bfff);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 }
 
-.hero-text{
-    max-width:760px;
-    color:#adc0ea;
-    line-height:1.9;
-    font-size:1.15rem;
-    margin-bottom:42px;
+.subtitle{
+    max-width:900px;
+    color:#c9d7ff;
+    font-size:1.3rem;
+    line-height:1.8;
+    margin-bottom:45px;
 }
 
 .hero-buttons{
     display:flex;
     gap:18px;
     flex-wrap:wrap;
+    justify-content:center;
 }
 
 .btn{
-    text-decoration:none;
     padding:18px 34px;
-    border-radius:18px;
-    font-weight:800;
+    border-radius:16px;
+    text-decoration:none;
+    font-weight:700;
     transition:0.3s;
 }
 
 .primary{
-    background:linear-gradient(135deg,#18adff,#005eff);
+    background:#16a8ff;
     color:white;
-    box-shadow:0 0 40px rgba(24,173,255,0.4);
+    box-shadow:0 0 30px rgba(22,168,255,0.45);
 }
 
 .primary:hover{
@@ -184,317 +138,253 @@ h1{
 }
 
 .secondary{
-    border:1px solid rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.15);
     color:white;
-    background:rgba(255,255,255,0.03);
+    backdrop-filter:blur(10px);
 }
 
-.hero-right{
-    flex:1;
+.secondary:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.stats{
+    margin-top:70px;
     display:flex;
+    gap:50px;
+    flex-wrap:wrap;
     justify-content:center;
 }
 
-.phone{
-    width:360px;
-    background:#091122;
-    border-radius:42px;
-    padding:18px;
-    border:1px solid rgba(255,255,255,0.08);
-    box-shadow:0 0 60px rgba(0,0,0,0.5);
+.stat h2{
+    font-size:2.5rem;
+    color:#16a8ff;
 }
 
-.phone-screen{
-    background:#000;
-    border-radius:30px;
-    overflow:hidden;
-    position:relative;
-}
-
-.phone-screen img{
-    width:100%;
-    height:680px;
-    object-fit:cover;
-}
-
-.overlay{
-    position:absolute;
-    inset:0;
-    background:linear-gradient(to top,rgba(0,0,0,0.85),transparent 50%);
-}
-
-.live-tag{
-    position:absolute;
-    top:18px;
-    left:18px;
-    background:#ff2d55;
-    padding:8px 14px;
-    border-radius:999px;
-    font-size:0.8rem;
-    font-weight:800;
-}
-
-.viewer{
-    position:absolute;
-    top:18px;
-    right:18px;
-    background:rgba(0,0,0,0.5);
-    padding:8px 14px;
-    border-radius:999px;
-    font-size:0.8rem;
-}
-
-.stream-info{
-    position:absolute;
-    bottom:26px;
-    left:24px;
-    right:24px;
-}
-
-.stream-info h3{
-    font-size:1.4rem;
-    margin-bottom:10px;
-}
-
-.stream-info p{
-    color:#d2dfff;
-    line-height:1.7;
+.stat p{
+    color:#9fb3d8;
+    margin-top:8px;
 }
 
 .section{
-    padding:120px 7%;
+    padding:110px 8%;
 }
 
 .section-title{
-    font-size:3.5rem;
+    font-size:3rem;
     margin-bottom:18px;
     font-weight:900;
 }
 
 .section-text{
-    color:#9eb4db;
-    max-width:820px;
+    color:#9fb3d8;
     line-height:1.9;
-    margin-bottom:65px;
+    max-width:850px;
+    margin-bottom:60px;
     font-size:1.1rem;
 }
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:28px;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:24px;
 }
 
 .card{
-    background:linear-gradient(180deg,#091122,#060b17);
-    border:1px solid rgba(255,255,255,0.06);
-    padding:36px;
-    border-radius:28px;
-    transition:0.35s;
-    position:relative;
-    overflow:hidden;
-}
-
-.card::before{
-    content:"";
-    position:absolute;
-    width:200px;
-    height:200px;
-    background:radial-gradient(circle,#15a8ff18 0%,transparent 70%);
-    top:-100px;
-    right:-100px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:24px;
+    padding:35px;
+    transition:0.3s;
 }
 
 .card:hover{
-    transform:translateY(-8px);
-    border-color:#15a8ff;
+    transform:translateY(-6px);
+    border-color:#16a8ff;
+    box-shadow:0 0 35px rgba(22,168,255,0.15);
 }
 
 .card h3{
-    font-size:1.4rem;
-    margin-bottom:18px;
+    margin-bottom:16px;
+    font-size:1.35rem;
 }
 
 .card p{
-    color:#aabce0;
+    color:#aebfe1;
     line-height:1.8;
 }
 
-.feature-number{
-    font-size:3rem;
-    font-weight:900;
-    color:#15a8ff;
-    margin-bottom:22px;
+.feed{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:25px;
+}
+
+.stream{
+    background:#0c1226;
+    border-radius:24px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.stream img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.stream-content{
+    padding:22px;
+}
+
+.badge{
+    display:inline-block;
+    background:#ff2d55;
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:0.8rem;
+    font-weight:700;
+    margin-bottom:14px;
+}
+
+.stream h4{
+    font-size:1.2rem;
+    margin-bottom:10px;
+}
+
+.stream p{
+    color:#9fb3d8;
 }
 
 .cta{
     text-align:center;
-    padding:130px 7%;
-}
-
-.cta-box{
-    background:linear-gradient(180deg,#0a1328,#08101d);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:36px;
-    padding:90px 40px;
-    position:relative;
-    overflow:hidden;
-}
-
-.cta-box::before{
-    content:"";
-    position:absolute;
-    width:500px;
-    height:500px;
-    background:radial-gradient(circle,#15a8ff20 0%,transparent 70%);
-    top:-250px;
-    right:-150px;
+    background:linear-gradient(180deg,#0b1225,#09101f);
+    border-top:1px solid rgba(255,255,255,0.08);
 }
 
 .cta h2{
-    font-size:4rem;
-    margin-bottom:24px;
-    position:relative;
-}
-
-.cta p{
-    max-width:780px;
-    margin:auto;
-    color:#abc0e6;
-    line-height:1.9;
-    margin-bottom:40px;
-    position:relative;
+    font-size:3.5rem;
+    margin-bottom:25px;
 }
 
 footer{
-    padding:45px;
+    padding:40px;
     text-align:center;
-    color:#7d93b9;
-    border-top:1px solid rgba(255,255,255,0.05);
+    color:#8fa2c7;
+    border-top:1px solid rgba(255,255,255,0.06);
 }
 
-@media(max-width:1100px){
+@media(max-width:768px){
 
-.hero{
-    flex-direction:column;
-    text-align:center;
+    h1{
+        font-size:3.5rem;
+    }
+
+    .section-title{
+        font-size:2.1rem;
+    }
+
+    .subtitle{
+        font-size:1rem;
+    }
+
+    .nav{
+        padding:20px;
+    }
+
+    .nav-buttons{
+        display:none;
+    }
+
+    .cta h2{
+        font-size:2.2rem;
+    }
 }
-
-.hero-buttons{
-    justify-content:center;
-}
-
-h1{
-    font-size:4.5rem;
-}
-
-.section-title{
-    font-size:2.5rem;
-}
-
-.cta h2{
-    font-size:2.8rem;
-}
-
-}
-
-@media(max-width:700px){
-
-.nav-right .nav-link{
-    display:none;
-}
-
-.phone{
-    width:100%;
-    max-width:360px;
-}
-
-.phone-screen img{
-    height:560px;
-}
-
-h1{
-    font-size:3.2rem;
-}
-
-.hero-text{
-    font-size:1rem;
-}
-
-.section-title{
-    font-size:2rem;
-}
-
-.cta h2{
-    font-size:2.1rem;
-}
-
-}
-
 </style>
 </head>
 
 <body>
 
-<nav class="nav">
-<div class="logo">Crowd<span>Cast</span></div>
-
-<div class="nav-right">
-<a href="#" class="nav-link">Explore</a>
-<a href="#" class="nav-link">Streams</a>
-<a href="#" class="nav-link">Community</a>
-<a href="#" class="nav-btn login">Login</a>
-<a href="#" class="nav-btn signup">Get Started</a>
-</div>
-</nav>
-
 <section class="hero">
 
-<div class="hero-left">
+<div class="nav">
+    <div class="brand">Crowd<span>Cast</span></div>
 
-<div class="live-pill">
-<div class="dot"></div>
-LIVE SPORTS EXPERIENCE
+    <div class="nav-buttons">
+        <a href="#" class="nav-btn login">Login</a>
+        <a href="#" class="nav-btn signup">Get Started</a>
+    </div>
 </div>
 
-<h1>
-<span class="gradient">Feel the Crowd.</span>
-</h1>
+<div class="live">LIVE SPORTS EXPERIENCE</div>
 
-<p class="hero-text">
-CrowdCast bringt Fans direkt ins Zentrum des Spiels. 
-Erlebe Live-Momente, Emotionen und Reaktionen direkt aus der Crowd — 
-gestreamt von echten Fans im Stadion.
+<h1 class="gradient">Feel the Crowd.</h1>
+
+<p class="subtitle">
+Die erste Sport-Livestreaming-Plattform, bei der Fans direkt aus dem Stadion streamen 
+und Zuschauer weltweit echte Emotionen, Reaktionen und Fan-Perspektiven live erleben.
 </p>
 
 <div class="hero-buttons">
-<a href="#" class="btn primary">Start Watching</a>
-<a href="#" class="btn secondary">Go Live</a>
+    <a href="#" class="btn primary">Jetzt entdecken</a>
+    <a href="#" class="btn secondary">Streams ansehen</a>
 </div>
 
+<div class="stats">
+    <div class="stat">
+        <h2>120K+</h2>
+        <p>Live Zuschauer</p>
+    </div>
+
+    <div class="stat">
+        <h2>2.4K</h2>
+        <p>Aktive Streams</p>
+    </div>
+
+    <div class="stat">
+        <h2>85+</h2>
+        <p>Sport Events</p>
+    </div>
 </div>
 
-<div class="hero-right">
+</section>
 
-<div class="phone">
+<section class="section">
 
-<div class="phone-screen">
+<h2 class="section-title">Watch Sports Through the Fans.</h2>
 
-<img src="https://images.unsplash.com/photo-1547347298-4074fc3086f0?q=80&w=1200&auto=format&fit=crop">
+<p class="section-text">
+CrowdCast verbindet Fans weltweit. Statt nur TV-Bilder zu sehen, erleben Zuschauer
+das Stadion direkt aus der Perspektive der Crowd — live, emotional und ungefiltert.
+</p>
 
-<div class="overlay"></div>
+<div class="grid">
 
-<div class="live-tag">LIVE</div>
-
-<div class="viewer">42.3K watching</div>
-
-<div class="stream-info">
-<h3>Champions League Final</h3>
-<p>South Stand • Fan Perspective • Real Stadium Atmosphere</p>
+<div class="card">
+<h3>📱 Live Streaming</h3>
+<p>
+Fans können direkt vom Smartphone aus dem Stadion streamen und ihre Perspektive teilen.
+</p>
 </div>
 
+<div class="card">
+<h3>👀 Multi Perspective</h3>
+<p>
+Wechsle zwischen mehreren Fan-Kameras und erlebe das Spiel aus verschiedenen Blickwinkeln.
+</p>
 </div>
 
+<div class="card">
+<h3>💬 Live Chat</h3>
+<p>
+Diskutiere in Echtzeit mit Fans weltweit während der spannendsten Momente.
+</p>
+</div>
+
+<div class="card">
+<h3>🔥 Trending Games</h3>
+<p>
+Entdecke die aktuell beliebtesten Spiele, Fanreaktionen und Live-Momente.
+</p>
 </div>
 
 </div>
@@ -503,62 +393,59 @@ gestreamt von echten Fans im Stadion.
 
 <section class="section">
 
-<h2 class="section-title">The Future of Sports Streaming.</h2>
+<h2 class="section-title">Live Now</h2>
 
 <p class="section-text">
-Nicht nur zuschauen — mittendrin sein. CrowdCast verbindet Live-Streaming,
-Social Media und Sport-Community zu einer neuen Plattform für echte Fans.
+Top Live-Streams aus Fußball, Basketball, Motorsport und weiteren Sportarten.
 </p>
 
-<div class="grid">
+<div class="feed">
 
-<div class="card">
-<div class="feature-number">01</div>
-<h3>Live Fan Streams</h3>
-<p>
-Fans streamen direkt aus dem Stadion und teilen ihre Perspektive mit der ganzen Welt.
-</p>
+<div class="stream">
+<img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&auto=format&fit=crop">
+<div class="stream-content">
+<div class="badge">LIVE</div>
+<h4>Champions League Final</h4>
+<p>42.381 Zuschauer • Fanblock Nord</p>
+</div>
 </div>
 
-<div class="card">
-<div class="feature-number">02</div>
-<h3>Multi Perspective</h3>
-<p>
-Wechsle zwischen verschiedenen Fan-Kameras und erlebe das Spiel aus mehreren Blickwinkeln.
-</p>
+<div class="stream">
+<img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1200&auto=format&fit=crop">
+<div class="stream-content">
+<div class="badge">LIVE</div>
+<h4>NBA Playoffs</h4>
+<p>18.204 Zuschauer • Courtside View</p>
+</div>
 </div>
 
-<div class="card">
-<div class="feature-number">03</div>
-<h3>Live Community</h3>
-<p>
-Diskutiere mit Fans weltweit in Echtzeit und reagiere live auf jedes Tor.
-</p>
+<div class="stream">
+<img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=1200&auto=format&fit=crop">
+<div class="stream-content">
+<div class="badge">LIVE</div>
+<h4>Formula 1 Weekend</h4>
+<p>11.992 Zuschauer • Pitlane Crowd</p>
+</div>
 </div>
 
 </div>
 
 </section>
 
-<section class="cta">
-
-<div class="cta-box">
+<section class="section cta">
 
 <h2 class="gradient">Live the Stadium.</h2>
 
-<p>
-Die nächste Generation von Sport-Entertainment beginnt nicht im TV-Studio —
-sondern mitten in der Crowd.
+<p class="section-text" style="margin:auto auto 45px;">
+Werde Teil der nächsten Generation von Sport-Streaming und erlebe Spiele direkt aus der Crowd.
 </p>
 
 <a href="#" class="btn primary">Join CrowdCast</a>
 
-</div>
-
 </section>
 
 <footer>
-© 2026 CrowdCast — Watch Sports Through the Fans.
+© 2026 CrowdCast — Feel the Crowd.
 </footer>
 
 </body>
