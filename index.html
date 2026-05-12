@@ -209,7 +209,7 @@ async function updateUI(){
 updateUI();
 
 </script>
-//async function loadStreams() {
+async function loadStreams() {
   const { data, error } = await supabaseClient
     .from("streams")
     .select("*")
@@ -221,24 +221,36 @@ updateUI();
   }
 
   const container = document.getElementById("streamsContainer");
-  if (!container) return;
-
   container.innerHTML = "";
 
   data.forEach(stream => {
     const card = document.createElement("div");
 
-    card.style.background = "#111827";
-    card.style.padding = "15px";
-    card.style.margin = "10px 0";
-    card.style.borderRadius = "12px";
+    card.style.background = "linear-gradient(180deg,#0f172a,#0b1220)";
+    card.style.padding = "18px";
+    card.style.margin = "12px 0";
+    card.style.borderRadius = "16px";
+    card.style.border = "1px solid rgba(255,255,255,0.08)";
+    card.style.cursor = "pointer";
 
     card.innerHTML = `
-      <h3>${stream.title}</h3>
-      <p>${stream.description || ""}</p>
-      <b style="color:${stream.is_live ? "red" : "gray"}">
-        ${stream.is_live ? "LIVE 🔴" : "OFFLINE"}
-      </b>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="margin:0;">${stream.title}</h3>
+        <span style="
+          padding:6px 10px;
+          border-radius:999px;
+          font-size:12px;
+          background:${stream.is_live ? '#ff2d55' : '#333'};
+          color:white;
+          font-weight:700;
+        ">
+          ${stream.is_live ? "LIVE 🔴" : "OFFLINE"}
+        </span>
+      </div>
+
+      <p style="color:#9aa4b2;margin-top:8px;">
+        ${stream.description || "Kein Beschreibungstext"}
+      </p>
     `;
 
     container.appendChild(card);
