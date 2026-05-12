@@ -184,6 +184,331 @@ window.watchStream = function(title){
 loadStreams();
 
 </script>
+<script>
 
+const supabaseUrl = "DEINE_URL";
+const supabaseKey = "DEIN_KEY";
+const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+let pc;
+let room;
+
+/* ======================
+   LOGIN
+====================== */
+
+window.login = async function(){
+  const email = prompt("Email");
+  const password = prompt("Passwort");
+
+  const {error} = await client.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error) alert(error.message);
+  else alert("Login erfolgreich");
+}
+
+/* ======================
+   STREAM ERSTELLEN
+====================== */
+
+window.createStream = async function(){
+
+  const title = prompt("Stream Name");
+
+  const {data:{user}} = await client.auth.getUser();
+
+  if(!user){
+    alert("Bitte einloggen");
+    return;
+  }
+
+  await client.from("streams").insert([{
+    title,
+    user_id: user.id,
+    is_live: true,
+    viewers: 0,
+    premium: false
+  }]);
+
+  alert("Stream erstellt");
+}
+
+/* ======================
+   STREAM ANZEIGEN + VIDEO
+====================== */
+
+window.watchStream = async function(title){
+
+  room = title;
+
+  document.body.innerHTML += `
+    <div style="padding:20px">
+      <h2>🎥 ${title}</h2>
+
+      <div>👀 Viewers: <span id="viewerCount">0</span></div>
+
+      <video id="video" autoplay playsinline controls style="width:100%;max-width:800px;border-radius:12px"></video>
+
+      <div style="margin-top:20px;background:#111a2e;padding:10px;border-radius:10px">
+        <div id="chatBox"></div>
+        <input id="msg" placeholder="Nachricht...">
+        <button onclick="sendMsg()" style="margin-top:10px;background:#15a8ff;color:white;padding:10px;border:none;border-radius:10px">Send</button>
+      </div>
+    </div>
+  `;
+
+  setupVideo();
+  setupChat();
+  simulateViewers();
+}
+
+/* ======================
+   WEBRTC VIEWER
+====================== */
+
+function setupVideo(){
+
+  pc = new RTCPeerConnection({
+    iceServers:[{urls:"stun:stun.l.google.com:19302"}]
+  });
+
+  pc.ontrack = (e)=>{
+    document.getElementById("video").srcObject = e.streams[0];
+  };
+
+  client.channel("signals")
+  .on("postgres_changes",{
+    event:"INSERT",
+    schema:"public",
+    table:"signals"
+  }, async p=>{
+
+    if(p.new.room !== room) return;
+
+    const data = JSON.parse(p.new.data);
+
+    if(data.type === "offer"){
+      await pc.setRemoteDescription(data);
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+
+      await client.from("signals").insert([{
+        room,
+        data: JSON.stringify(answer)
+      }]);
+    }
+
+    if(data.type === "answer"){
+      await pc.setRemoteDescription(data);
+    }
+
+    if(data.candidate){
+      await pc.addIceCandidate(data);
+    }
+
+  }).subscribe();
+
+}
+
+/* ======================
+   CHAT (REALTIME)
+====================== */
+
+function setupChat(){
+
+  client.channel("chat")
+  .on("postgres_changes",{
+    event:"INSERT",
+    schema:"public",
+    table:"messages"
+  }, p=>{
+
+    if(p.new.room !== room) return;
+
+    const div = document.createElement("div");
+    div.innerText = p.new.text;
+
+    document.getElementById("chatBox").appendChild(div);
+
+  }).subscribe();
+
+}
+
+/* SEND MESSAGE */
+
+window.sendMsg = async function(){
+
+  const msg = document.getElementById("msg").value;
+
+  const {data:{user}} = await client.auth.getUser();
+
+  await client.from("messages").insert([{
+    room,
+    text: msg,
+    user_id: user?.id
+  }]);
+
+}
+
+/* ======================
+   VIEWER COUNTER (SIMULATION)
+====================== */
+
+function simulateViewers(){
+
+  let count = 0;
+
+  setInterval(async ()=>{
+
+    count += Math.floor(Math.random()*3);
+
+    document.getElementById("viewerCount").innerText = count;
+
+  },3000);
+
+}
+
+</script>
+<script>
+
+const supabaseUrl = "DEINE_URL";
+const supabaseKey = "DEIN_KEY";
+const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+let pc;
+let room;
+
+/* ======================
+   LOGIN
+====================== */
+
+window.login = async function(){
+  const email = prompt("Email");
+  const password = prompt("Passwort");
+
+  const {error} = await client.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error) alert(error.message);
+  else alert("Login ok");
+}
+
+/* ======================
+   STREAM LIST (optional dummy)
+====================== */
+
+async function loadStreams(){
+  const box = document.getElementById("streams");
+  if(!box) return;
+}
+
+/* ======================
+   GO LIVE (STREAMER)
+====================== */
+
+window.createStream = async function(){
+
+  room = prompt("Stream Name");
+
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video:true,
+    audio:true
+  });
+
+  pc = new RTCPeerConnection({
+    iceServers:[
+      {urls:"stun:stun.l.google.com:19302"}
+    ]
+  });
+
+  stream.getTracks().forEach(t => pc.addTrack(t, stream));
+
+  pc.onicecandidate = async (e)=>{
+    if(e.candidate){
+      await client.from("signals").insert([{
+        room,
+        data: JSON.stringify(e.candidate)
+      }]);
+    }
+  };
+
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  await client.from("signals").insert([{
+    room,
+    data: JSON.stringify(offer)
+  }]);
+
+  alert("LIVE gestartet");
+}
+
+/* ======================
+   WATCH STREAM
+====================== */
+
+window.watchStream = async function(title){
+
+  room = title;
+
+  document.body.innerHTML += `
+    <div style="padding:20px">
+      <h2>Watching: ${title}</h2>
+      <video id="video" autoplay playsinline controls style="width:100%;max-width:800px;border-radius:12px"></video>
+    </div>
+  `;
+
+  pc = new RTCPeerConnection({
+    iceServers:[
+      {urls:"stun:stun.l.google.com:19302"}
+    ]
+  });
+
+  pc.ontrack = (e)=>{
+    document.getElementById("video").srcObject = e.streams[0];
+  };
+
+  client.channel("signals")
+  .on("postgres_changes",{
+    event:"INSERT",
+    schema:"public",
+    table:"signals"
+  }, async p=>{
+
+    if(p.new.room !== room) return;
+
+    const data = JSON.parse(p.new.data);
+
+    if(data.type === "offer"){
+      await pc.setRemoteDescription(data);
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+
+      await client.from("signals").insert([{
+        room,
+        data: JSON.stringify(answer)
+      }]);
+    }
+
+    if(data.type === "answer"){
+      await pc.setRemoteDescription(data);
+    }
+
+    if(data.candidate){
+      await pc.addIceCandidate(data);
+    }
+
+  }).subscribe();
+}
+
+/* INIT */
+loadStreams();
+
+</script>    
 </body>
 </html>
