@@ -5,13 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CrowdCast</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
 <style>
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter;
+}
 
 body{
   background:#070b18;
@@ -22,7 +25,7 @@ body{
 nav{
   display:flex;
   justify-content:space-between;
-  padding:16px 24px;
+  padding:15px 20px;
   background:#0f172a;
   position:sticky;
   top:0;
@@ -30,7 +33,6 @@ nav{
 
 .logo{
   font-weight:900;
-  font-size:20px;
 }
 .logo span{color:#15a8ff}
 
@@ -47,27 +49,27 @@ button{
 
 /* HERO */
 .hero{
-  padding:40px 24px;
+  padding:30px 20px;
 }
 
 .hero h1{
-  font-size:40px;
+  font-size:34px;
   font-weight:900;
 }
 
 .hero p{
   color:#9fb3d1;
   margin-top:10px;
-  max-width:600px;
 }
 
+/* STREAMS */
 .section{
-  padding:24px;
+  padding:20px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:12px;
   margin-top:15px;
 }
@@ -76,12 +78,11 @@ button{
   background:#111a2e;
   border-radius:12px;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,0.05);
 }
 
 .card img{
   width:100%;
-  height:130px;
+  height:120px;
   object-fit:cover;
 }
 
@@ -92,7 +93,7 @@ button{
 /* STREAM VIEW */
 #streamView{
   display:none;
-  padding:24px;
+  padding:20px;
 }
 
 video{
@@ -118,187 +119,101 @@ input{
   color:white;
 }
 
-/* LOGIN */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.box{
-  background:#111a2e;
-  padding:20px;
-  border-radius:12px;
-  width:300px;
-}
-
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <nav>
   <div class="logo">Crowd<span>Cast</span></div>
-
-  <div>
-    <button class="ghost" onclick="openLogin()">Login</button>
-    <button class="primary" onclick="goLive()">Go Live</button>
-  </div>
+  <button class="primary" onclick="alert('Go Live kommt später')">Go Live</button>
 </nav>
 
-<!-- HERO -->
-<div class="hero" id="home">
-  <h1>Live Sports. From the Crowd.</h1>
-  <p>Streame echte Stadion-Momente oder schaue Live-Sport aus Fan-Perspektive.</p>
+<!-- HOME -->
+<div id="home">
 
-  <button class="primary" onclick="scrollToStreams()">Explore Streams</button>
+<div class="hero">
+  <h1>Live Sport. Aus der Crowd.</h1>
+  <p>Streams direkt aus dem Stadion – echte Fan-Perspektive.</p>
+
+  <button class="primary" onclick="scrollToStreams()">Streams ansehen</button>
 </div>
 
-<!-- STREAMS -->
 <div class="section" id="streamsSection">
   <h2>🔥 Live Streams</h2>
-  <div class="grid" id="streams"></div>
+
+  <div class="grid">
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d">
+      <div class="card-content">
+        <b>Champions League</b><br><br>
+        <button class="primary" onclick="openStream('Champions League')">Watch</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2">
+      <div class="card-content">
+        <b>NBA Finals</b><br><br>
+        <button class="primary" onclick="openStream('NBA Finals')">Watch</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 </div>
 
 <!-- STREAM VIEW -->
 <div id="streamView">
-  <button class="ghost" onclick="back()">← Back</button>
 
-  <h2 id="title"></h2>
+<button class="ghost" onclick="back()">← Back</button>
 
-  <video id="video" autoplay playsinline></video>
+<h2 id="title"></h2>
 
-  <div class="chat">
-    <div id="chatBox"></div>
-    <input id="msg" placeholder="Nachricht...">
-    <button class="primary" onclick="sendMsg()">Send</button>
-  </div>
+<video controls autoplay></video>
+
+<div class="chat">
+  <div id="chatBox"></div>
+  <input id="msg" placeholder="Nachricht...">
+  <button class="primary" onclick="sendMsg()">Send</button>
 </div>
 
-<!-- LOGIN -->
-<div class="modal" id="login">
-  <div class="box">
-    <h3>Login</h3>
-    <input id="email" placeholder="Email">
-    <input id="pass" type="password" placeholder="Passwort">
-
-    <button class="primary" onclick="login()" style="width:100%;margin-top:10px;">Login</button>
-    <button class="ghost" onclick="closeLogin()" style="width:100%;margin-top:10px;">Close</button>
-  </div>
 </div>
 
 <script>
-
-/* SUPABASE */
-const supabaseUrl="https://ujtzhllmkclhibybfhae.supabase.co";
-const supabaseKey="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
-const supabase=supabase.createClient(supabaseUrl,supabaseKey);
-
-/* UI */
-function openLogin(){document.getElementById("login").style.display="flex"}
-function closeLogin(){document.getElementById("login").style.display="none"}
 
 function scrollToStreams(){
   document.getElementById("streamsSection").scrollIntoView({behavior:"smooth"});
 }
 
-/* LOGIN */
-async function login(){
-  await supabase.auth.signInWithPassword({
-    email:document.getElementById("email").value,
-    password:document.getElementById("pass").value
-  });
-
-  closeLogin();
-}
-
-/* STREAM LIST */
-async function loadStreams(){
-
-  const {data}=await supabase.from("streams").select("*");
-
-  const box=document.getElementById("streams");
-  box.innerHTML="";
-
-  data.forEach(s=>{
-
-    const div=document.createElement("div");
-    div.className="card";
-
-    div.innerHTML=`
-      <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d">
-      <div class="card-content">
-        <b>${s.title}</b><br><br>
-        <button class="primary" onclick="openStream('${s.title}')">Watch</button>
-      </div>
-    `;
-
-    box.appendChild(div);
-
-  });
-
-}
-
-/* OPEN STREAM */
 function openStream(title){
 
   document.getElementById("home").style.display="none";
-  document.getElementById("streamsSection").style.display="none";
   document.getElementById("streamView").style.display="block";
 
-  document.getElementById("title").innerText=title;
-
+  document.getElementById("title").innerText = title;
 }
 
-/* BACK */
 function back(){
-
   document.getElementById("home").style.display="block";
-  document.getElementById("streamsSection").style.display="block";
   document.getElementById("streamView").style.display="none";
-
 }
 
-/* CHAT */
-async function sendMsg(){
+function sendMsg(){
 
   const msg=document.getElementById("msg").value;
+  if(!msg) return;
 
-  await supabase.from("messages").insert([{
-    room:"test",
-    text:msg
-  }]);
+  const div=document.createElement("div");
+  div.innerText=msg;
+
+  document.getElementById("chatBox").appendChild(div);
 
   document.getElementById("msg").value="";
-
 }
-
-/* LIVE CHAT */
-supabase
-  .channel("chat")
-  .on("postgres_changes",{
-    event:"INSERT",
-    schema:"public",
-    table:"messages"
-  },payload=>{
-
-    const div=document.createElement("div");
-    div.innerText=payload.new.text;
-
-    document.getElementById("chatBox").appendChild(div);
-
-  })
-  .subscribe();
-
-/* GO LIVE (MVP) */
-async function goLive(){
-  alert("Go Live Feature (nächster Schritt: echtes Streaming)");
-}
-
-loadStreams();
 
 </script>
 
