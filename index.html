@@ -6,94 +6,160 @@
 <title>CrowdCast</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
 <style>
+
 body{
     margin:0;
     font-family:Inter;
-    background:#040814;
+    background:radial-gradient(circle at top,#0a1430,#040814);
     color:white;
 }
 
+/* LOGIN SCREEN */
+#authScreen{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.7);
+    z-index:9999;
+}
+
+.authBox{
+    background:rgba(255,255,255,0.05);
+    padding:25px;
+    border-radius:14px;
+    width:300px;
+    backdrop-filter:blur(12px);
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    background:rgba(255,255,255,0.05);
+    color:white;
+}
+
+/* NAV */
 .nav{
     display:flex;
     justify-content:space-between;
-    padding:20px;
-    background:rgba(10,15,30,0.8);
-    position:sticky;
-    top:0;
+    align-items:center;
+    padding:15px 25px;
+    background:rgba(10,15,30,0.6);
+    backdrop-filter:blur(12px);
 }
 
-.logo{font-weight:900}
+.logo{
+    font-weight:900;
+    font-size:20px;
+}
 .logo span{color:#15a8ff}
 
+/* BUTTONS */
 button{
     padding:10px 14px;
     border:none;
     border-radius:10px;
     cursor:pointer;
+    font-weight:600;
 }
 
-.primary{background:#15a8ff;color:white}
-.ghost{background:#1e293b;color:white}
+.primary{
+    background:#15a8ff;
+    color:white;
+}
 
-.container{padding:20px}
+/* STREAMS */
+.container{
+    padding:20px;
+}
+
+#streams{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px;
+}
 
 .card{
-    background:#111a2e;
+    background:rgba(255,255,255,0.04);
     padding:15px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+/* VIDEO */
+video{
+    width:100%;
     border-radius:12px;
     margin-top:10px;
 }
 
-input{
+#streamView{
+    padding:20px;
+}
+
+/* CHAT */
+#chatBox{
+    height:150px;
+    overflow:auto;
+    margin-top:10px;
+    background:rgba(255,255,255,0.03);
     padding:10px;
     border-radius:10px;
-    border:none;
-    width:100%;
-    margin-top:10px;
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
+<div id="authScreen">
+  <div class="authBox">
+    <h2>Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Passwort">
+    <button class="primary" onclick="login()">Login</button>
+  </div>
+</div>
+
+<!-- NAV -->
 <div class="nav">
-<div class="logo">Crowd<span>Cast</span></div>
-
-<div>
-<button class="ghost" onclick="login()">Login</button>
-<button class="primary" onclick="createStream()">Go Live</button>
-</div>
+  <div class="logo">Crowd<span>Cast</span></div>
+  <button class="primary" onclick="loadStreams()">Reload</button>
 </div>
 
+<!-- STREAM LIST -->
 <div class="container">
-
-<h2>🔥 Live Streams</h2>
-<div id="streams"></div>
-
+  <h2>🔥 Live Streams</h2>
+  <div id="streams"></div>
 </div>
 
 <script>
 
-/* ======================
+/* =======================
    SUPABASE SETUP
-====================== */
+======================= */
 
 const supabaseUrl = "https://ujtzhllmkclhibybfhae.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
 const client = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* ======================
+/* =======================
    LOGIN
-====================== */
+======================= */
 
-window.login = async function(){
+async function login(){
 
-  const email = prompt("Email");
-  const password = prompt("Passwort");
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   const {error} = await client.auth.signInWithPassword({
     email,
@@ -102,413 +168,78 @@ window.login = async function(){
 
   if(error){
     alert(error.message);
-  } else {
-    alert("Login erfolgreich");
-    loadStreams();
+    return;
   }
+
+  document.getElementById("authScreen").style.display = "none";
+  loadStreams();
 }
 
-/* ======================
-   STREAMS LADEN
-====================== */
+/* =======================
+   STREAM LIST
+======================= */
 
 async function loadStreams(){
 
-  const {data, error} = await client
-    .from("streams")
-    .select("*");
+  const {data} = await client.from("streams").select("*");
 
   const box = document.getElementById("streams");
   box.innerHTML = "";
 
-  if(error){
-    box.innerHTML = "Fehler beim Laden";
-    return;
-  }
-
-  data.forEach(s => {
+  data.forEach(s=>{
 
     const div = document.createElement("div");
     div.className = "card";
 
     div.innerHTML = `
-      <b>${s.title}</b><br><br>
-      <button class="primary" onclick="watchStream('${s.title}')">Watch</button>
+      <h3>${s.title}</h3>
+      <p>${s.category}</p>
+      <button class="primary" onclick="watchStream('${s.title}')">
+        Watch
+      </button>
     `;
 
     box.appendChild(div);
+
   });
-
 }
 
-/* ======================
-   STREAM ERSTELLEN
-====================== */
+/* =======================
+   WATCH STREAM
+======================= */
 
-window.createStream = async function(){
+async function watchStream(title){
 
-  const title = prompt("Stream Name");
+  document.body.innerHTML = `
+    <div id="streamView">
+      <h2>${title}</h2>
 
-  const {data:{user}} = await client.auth.getUser();
+      <video id="video" autoplay controls></video>
 
-  if(!user){
-    alert("Bitte einloggen");
-    return;
-  }
+      <div id="chatBox"></div>
 
-  const {error} = await client
-    .from("streams")
-    .insert([{
-      title,
-      user_id: user.id,
-      is_live: true
-    }]);
-
-  if(error){
-    alert(error.message);
-  } else {
-    alert("Stream erstellt");
-    loadStreams();
-  }
-}
-
-/* ======================
-   STREAM VIEW
-====================== */
-
-window.watchStream = function(title){
-  alert("Opening stream: " + title);
-}
-
-/* INIT */
-loadStreams();
-
-</script>
-<script>
-
-const supabaseUrl = "DEINE_URL";
-const supabaseKey = "DEIN_KEY";
-const client = supabase.createClient(supabaseUrl, supabaseKey);
-
-let pc;
-let room;
-
-/* ======================
-   LOGIN
-====================== */
-
-window.login = async function(){
-  const email = prompt("Email");
-  const password = prompt("Passwort");
-
-  const {error} = await client.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if(error) alert(error.message);
-  else alert("Login erfolgreich");
-}
-
-/* ======================
-   STREAM ERSTELLEN
-====================== */
-
-window.createStream = async function(){
-
-  const title = prompt("Stream Name");
-
-  const {data:{user}} = await client.auth.getUser();
-
-  if(!user){
-    alert("Bitte einloggen");
-    return;
-  }
-
-  await client.from("streams").insert([{
-    title,
-    user_id: user.id,
-    is_live: true,
-    viewers: 0,
-    premium: false
-  }]);
-
-  alert("Stream erstellt");
-}
-
-/* ======================
-   STREAM ANZEIGEN + VIDEO
-====================== */
-
-window.watchStream = async function(title){
-
-  room = title;
-
-  document.body.innerHTML += `
-    <div style="padding:20px">
-      <h2>🎥 ${title}</h2>
-
-      <div>👀 Viewers: <span id="viewerCount">0</span></div>
-
-      <video id="video" autoplay playsinline controls style="width:100%;max-width:800px;border-radius:12px"></video>
-
-      <div style="margin-top:20px;background:#111a2e;padding:10px;border-radius:10px">
-        <div id="chatBox"></div>
-        <input id="msg" placeholder="Nachricht...">
-        <button onclick="sendMsg()" style="margin-top:10px;background:#15a8ff;color:white;padding:10px;border:none;border-radius:10px">Send</button>
-      </div>
+      <input id="msg" placeholder="Nachricht">
+      <button class="primary" onclick="sendMsg()">Send</button>
     </div>
   `;
 
-  setupVideo();
-  setupChat();
-  simulateViewers();
 }
 
-/* ======================
-   WEBRTC VIEWER
-====================== */
-
-function setupVideo(){
-
-  pc = new RTCPeerConnection({
-    iceServers:[{urls:"stun:stun.l.google.com:19302"}]
-  });
-
-  pc.ontrack = (e)=>{
-    document.getElementById("video").srcObject = e.streams[0];
-  };
-
-  client.channel("signals")
-  .on("postgres_changes",{
-    event:"INSERT",
-    schema:"public",
-    table:"signals"
-  }, async p=>{
-
-    if(p.new.room !== room) return;
-
-    const data = JSON.parse(p.new.data);
-
-    if(data.type === "offer"){
-      await pc.setRemoteDescription(data);
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-
-      await client.from("signals").insert([{
-        room,
-        data: JSON.stringify(answer)
-      }]);
-    }
-
-    if(data.type === "answer"){
-      await pc.setRemoteDescription(data);
-    }
-
-    if(data.candidate){
-      await pc.addIceCandidate(data);
-    }
-
-  }).subscribe();
-
-}
-
-/* ======================
-   CHAT (REALTIME)
-====================== */
-
-function setupChat(){
-
-  client.channel("chat")
-  .on("postgres_changes",{
-    event:"INSERT",
-    schema:"public",
-    table:"messages"
-  }, p=>{
-
-    if(p.new.room !== room) return;
-
-    const div = document.createElement("div");
-    div.innerText = p.new.text;
-
-    document.getElementById("chatBox").appendChild(div);
-
-  }).subscribe();
-
-}
-
-/* SEND MESSAGE */
-
-window.sendMsg = async function(){
+async function sendMsg(){
 
   const msg = document.getElementById("msg").value;
 
-  const {data:{user}} = await client.auth.getUser();
-
   await client.from("messages").insert([{
-    room,
-    text: msg,
-    user_id: user?.id
+    room:"global",
+    text:msg
   }]);
 
-}
-
-/* ======================
-   VIEWER COUNTER (SIMULATION)
-====================== */
-
-function simulateViewers(){
-
-  let count = 0;
-
-  setInterval(async ()=>{
-
-    count += Math.floor(Math.random()*3);
-
-    document.getElementById("viewerCount").innerText = count;
-
-  },3000);
-
-}
-
-</script>
-<script>
-
-const supabaseUrl = "DEINE_URL";
-const supabaseKey = "DEIN_KEY";
-const client = supabase.createClient(supabaseUrl, supabaseKey);
-
-let pc;
-let room;
-
-/* ======================
-   LOGIN
-====================== */
-
-window.login = async function(){
-  const email = prompt("Email");
-  const password = prompt("Passwort");
-
-  const {error} = await client.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if(error) alert(error.message);
-  else alert("Login ok");
-}
-
-/* ======================
-   STREAM LIST (optional dummy)
-====================== */
-
-async function loadStreams(){
-  const box = document.getElementById("streams");
-  if(!box) return;
-}
-
-/* ======================
-   GO LIVE (STREAMER)
-====================== */
-
-window.createStream = async function(){
-
-  room = prompt("Stream Name");
-
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video:true,
-    audio:true
-  });
-
-  pc = new RTCPeerConnection({
-    iceServers:[
-      {urls:"stun:stun.l.google.com:19302"}
-    ]
-  });
-
-  stream.getTracks().forEach(t => pc.addTrack(t, stream));
-
-  pc.onicecandidate = async (e)=>{
-    if(e.candidate){
-      await client.from("signals").insert([{
-        room,
-        data: JSON.stringify(e.candidate)
-      }]);
-    }
-  };
-
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-
-  await client.from("signals").insert([{
-    room,
-    data: JSON.stringify(offer)
-  }]);
-
-  alert("LIVE gestartet");
-}
-
-/* ======================
-   WATCH STREAM
-====================== */
-
-window.watchStream = async function(title){
-
-  room = title;
-
-  document.body.innerHTML += `
-    <div style="padding:20px">
-      <h2>Watching: ${title}</h2>
-      <video id="video" autoplay playsinline controls style="width:100%;max-width:800px;border-radius:12px"></video>
-    </div>
-  `;
-
-  pc = new RTCPeerConnection({
-    iceServers:[
-      {urls:"stun:stun.l.google.com:19302"}
-    ]
-  });
-
-  pc.ontrack = (e)=>{
-    document.getElementById("video").srcObject = e.streams[0];
-  };
-
-  client.channel("signals")
-  .on("postgres_changes",{
-    event:"INSERT",
-    schema:"public",
-    table:"signals"
-  }, async p=>{
-
-    if(p.new.room !== room) return;
-
-    const data = JSON.parse(p.new.data);
-
-    if(data.type === "offer"){
-      await pc.setRemoteDescription(data);
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-
-      await client.from("signals").insert([{
-        room,
-        data: JSON.stringify(answer)
-      }]);
-    }
-
-    if(data.type === "answer"){
-      await pc.setRemoteDescription(data);
-    }
-
-    if(data.candidate){
-      await pc.addIceCandidate(data);
-    }
-
-  }).subscribe();
 }
 
 /* INIT */
 loadStreams();
 
-</script>    
+</script>
+
 </body>
 </html>
