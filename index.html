@@ -108,8 +108,15 @@ input{
 
 <!-- DASHBOARD -->
 <div class="hero hidden" id="dashboard">
+  
   <h1>Dashboard</h1>
-  <p>Du bist eingeloggt 🚀</p>
+
+  <h2>Live Streams</h2>
+
+  <button onclick="createStream()">+ Stream erstellen</button>
+
+  <div id="streamsContainer"></div>
+
 </div>
 
 <!-- LOGIN MODAL -->
@@ -202,6 +209,40 @@ async function updateUI(){
 updateUI();
 
 </script>
+//async function loadStreams() {
+  const { data, error } = await supabaseClient
+    .from("streams")
+    .select("*")
+    .order("created_at", { ascending: false });
 
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  const container = document.getElementById("streamsContainer");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  data.forEach(stream => {
+    const card = document.createElement("div");
+
+    card.style.background = "#111827";
+    card.style.padding = "15px";
+    card.style.margin = "10px 0";
+    card.style.borderRadius = "12px";
+
+    card.innerHTML = `
+      <h3>${stream.title}</h3>
+      <p>${stream.description || ""}</p>
+      <b style="color:${stream.is_live ? "red" : "gray"}">
+        ${stream.is_live ? "LIVE 🔴" : "OFFLINE"}
+      </b>
+    `;
+
+    container.appendChild(card);
+  });
+}
 </body>
 </html>
