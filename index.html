@@ -3,13 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CrowdCast</title>
+<title>CrowdCast Future</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
 
 <style>
+
+html{
+  scroll-behavior:smooth;
+}
 
 *{
   margin:0;
@@ -19,21 +23,31 @@
 }
 
 body{
-  background:#0a0f1d;
+  background:#050814;
   color:white;
+  overflow-x:hidden;
+}
+
+/* GRADIENT BACKGROUND */
+.bg{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 20%, #1a7fff33, transparent 40%),
+    radial-gradient(circle at 80% 80%, #ff2d5533, transparent 40%);
+  z-index:-1;
 }
 
 /* NAV */
 nav{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding:18px 30px;
-  background:rgba(10,15,29,0.8);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(255,255,255,0.05);
+  padding:18px 40px;
   position:sticky;
   top:0;
+  backdrop-filter:blur(15px);
+  background:rgba(5,8,20,0.6);
+  border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
 .logo{
@@ -42,11 +56,9 @@ nav{
   letter-spacing:-1px;
 }
 
-.logo span{
-  color:#15a8ff;
-}
+.logo span{color:#15a8ff}
 
-.nav-right button{
+nav button{
   margin-left:10px;
   padding:10px 14px;
   border:none;
@@ -55,81 +67,75 @@ nav{
   font-weight:600;
 }
 
-.primary{
-  background:#15a8ff;
-  color:white;
-}
-
-.ghost{
-  background:rgba(255,255,255,0.06);
-  color:white;
-}
+.primary{background:#15a8ff;color:white}
+.ghost{background:rgba(255,255,255,0.08);color:white}
 
 /* HERO */
 .hero{
-  padding:60px 30px;
+  height:90vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:0 40px;
 }
 
 .hero h1{
-  font-size:48px;
+  font-size:70px;
   font-weight:900;
-  line-height:1.1;
+  line-height:1;
 }
 
 .hero p{
-  color:#9fb3d1;
-  margin-top:10px;
   max-width:600px;
+  margin-top:20px;
+  color:#a9b7d0;
+  font-size:18px;
 }
 
-/* PLANS */
-.plans{
-  display:flex;
-  gap:15px;
-  margin-top:25px;
-  flex-wrap:wrap;
+.hero-buttons{
+  margin-top:30px;
 }
 
-.plan{
-  background:#111a2e;
-  padding:15px;
+.hero button{
+  margin-right:10px;
+  padding:14px 18px;
   border-radius:12px;
-  flex:1;
-  min-width:200px;
-  border:1px solid rgba(255,255,255,0.05);
+  border:none;
+  font-weight:700;
+  cursor:pointer;
 }
 
-.plan b{
-  display:block;
-  margin-bottom:5px;
-}
-
-/* STREAM GRID */
+/* SCROLL SECTION */
 .section{
-  padding:30px;
+  padding:80px 40px;
+}
+
+.section h2{
+  font-size:36px;
+  margin-bottom:20px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:15px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
 }
 
 .card{
-  background:#111a2e;
-  border-radius:14px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,0.05);
-  transition:0.2s;
+  transition:0.3s;
 }
 
 .card:hover{
-  transform:scale(1.02);
+  transform:translateY(-5px);
 }
 
 .card img{
   width:100%;
-  height:140px;
+  height:150px;
   object-fit:cover;
 }
 
@@ -138,36 +144,70 @@ nav{
 }
 
 .badge{
-  display:inline-block;
-  padding:4px 8px;
   font-size:12px;
-  border-radius:8px;
   background:#15a8ff;
+  padding:4px 8px;
+  border-radius:8px;
+  display:inline-block;
   margin-bottom:8px;
 }
 
-/* LOGIN MODAL */
+/* FEATURES */
+.features{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.feature{
+  flex:1;
+  min-width:250px;
+  background:rgba(255,255,255,0.04);
+  padding:20px;
+  border-radius:16px;
+}
+
+/* STREAM VIEW */
+.stream{
+  display:none;
+  padding:40px;
+}
+
+video{
+  width:100%;
+  max-width:800px;
+  border-radius:16px;
+}
+
+.chat{
+  margin-top:20px;
+  background:rgba(255,255,255,0.05);
+  padding:12px;
+  border-radius:12px;
+}
+
+/* LOGIN */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.6);
   display:none;
   justify-content:center;
   align-items:center;
+  background:rgba(0,0,0,0.7);
 }
 
 .box{
   background:#111a2e;
   padding:20px;
-  border-radius:14px;
-  width:300px;
+  border-radius:16px;
+  width:320px;
 }
 
 input{
   width:100%;
   padding:10px;
   margin-top:10px;
-  border-radius:8px;
+  border-radius:10px;
   border:none;
   background:#0a0f1d;
   color:white;
@@ -178,94 +218,148 @@ input{
 
 <body>
 
+<div class="bg"></div>
+
 <!-- NAV -->
 <nav>
   <div class="logo">Crowd<span>Cast</span></div>
-
-  <div class="nav-right">
+  <div>
     <button class="ghost" onclick="openLogin()">Login</button>
-    <button class="primary">Go Live</button>
+    <button class="primary" onclick="goLive()">Go Live</button>
   </div>
 </nav>
 
 <!-- HERO -->
-<div class="hero">
-  <h1>Live Sport. <br> Direkt aus dem Stadion.</h1>
+<section class="hero">
+  <h1>Live Sports.<br>From the Crowd.</h1>
   <p>
-    CrowdCast bringt Fans live ins Geschehen. Streame oder schaue Sportevents aus echten Stadionperspektiven.
+    Die nächste Generation von Sport-Streaming. Echt, live und direkt aus dem Stadion.
   </p>
 
-  <div class="plans">
-    <div class="plan">
-      <b>Free</b>
-      1080p · Werbung
-    </div>
-
-    <div class="plan">
-      <b>Pro – 6€</b>
-      bessere Qualität · weniger Ads
-    </div>
-
-    <div class="plan">
-      <b>Premium – 12€</b>
-      4K · kein Ads · AI Features
-    </div>
+  <div class="hero-buttons">
+    <button class="primary">Explore Streams</button>
+    <button class="ghost">Learn More</button>
   </div>
-</div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <h2>Why CrowdCast</h2>
+
+  <div class="features">
+    <div class="feature">🎥 Live Fan Streams</div>
+    <div class="feature">📱 Multi-Angle Experience</div>
+    <div class="feature">💬 Real-Time Chat</div>
+  </div>
+</section>
 
 <!-- STREAMS -->
-<div class="section">
-  <h2>🔥 Live Streams</h2>
+<section class="section">
+  <h2>Live Now 🔴</h2>
 
-  <div class="grid">
+  <div class="grid" id="streams"></div>
+</section>
 
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d">
-      <div class="card-content">
-        <div class="badge">LIVE</div>
-        <h3>Champions League</h3>
-        <p>Fan Stream aus dem Stadion</p>
-      </div>
-    </div>
+<!-- STREAM VIEW -->
+<section class="stream" id="streamView">
 
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2">
-      <div class="card-content">
-        <div class="badge">LIVE</div>
-        <h3>NBA Finals</h3>
-        <p>Courtside Perspektive</p>
-      </div>
-    </div>
+  <h2 id="title"></h2>
 
+  <video id="video" autoplay playsinline></video>
+
+  <div class="chat">
+    <div id="chatBox"></div>
+    <input id="msg" placeholder="Nachricht...">
+    <button class="primary" onclick="sendMsg()">Send</button>
   </div>
-</div>
+
+</section>
 
 <!-- LOGIN -->
-<div class="modal" id="loginModal">
+<div class="modal" id="login">
   <div class="box">
     <h3>Login</h3>
-
     <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Passwort">
+    <input id="pass" type="password" placeholder="Passwort">
 
-    <button class="primary" style="width:100%;margin-top:10px;">Login</button>
-    <button class="ghost" style="width:100%;margin-top:10px;" onclick="closeLogin()">Schließen</button>
+    <button class="primary" onclick="login()" style="width:100%;margin-top:10px;">Login</button>
+    <button class="ghost" onclick="closeLogin()" style="width:100%;margin-top:10px;">Close</button>
   </div>
 </div>
 
 <script>
 
-const supabaseUrl = "https://ujtzhllmkclhibybfhae.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseUrl="https://ujtzhllmkclhibybfhae.supabase.co";
+const supabaseKey="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
+const supabase=supabase.createClient(supabaseUrl,supabaseKey);
 
-function openLogin(){
-  document.getElementById("loginModal").style.display="flex";
+/* LOGIN */
+function openLogin(){document.getElementById("login").style.display="flex"}
+function closeLogin(){document.getElementById("login").style.display="none"}
+
+async function login(){
+  await supabase.auth.signInWithPassword({
+    email:document.getElementById("email").value,
+    password:document.getElementById("pass").value
+  });
+  closeLogin();
 }
 
-function closeLogin(){
-  document.getElementById("loginModal").style.display="none";
+/* STREAMS */
+async function load(){
+
+  const {data}=await supabase.from("streams").select("*");
+
+  const box=document.getElementById("streams");
+
+  data.forEach(s=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+      <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d">
+      <div class="card-content">
+        <div class="badge">LIVE</div>
+        <b>${s.title}</b><br>
+        <button onclick="openStream('${s.title}')">Watch</button>
+      </div>
+    `;
+    box.appendChild(div);
+  });
+
 }
+
+/* STREAM */
+function openStream(title){
+  document.querySelector(".hero").style.display="none";
+  document.querySelectorAll(".section")[0].style.display="none";
+  document.querySelectorAll(".section")[1].style.display="none";
+
+  document.getElementById("streamView").style.display="block";
+  document.getElementById("title").innerText=title;
+}
+
+/* CHAT */
+async function sendMsg(){
+
+  const msg=document.getElementById("msg").value;
+
+  await supabase.from("messages").insert([{room:"test",text:msg}]);
+
+  document.getElementById("msg").value="";
+}
+
+/* LIVE CHAT */
+supabase.channel("chat")
+.on("postgres_changes",{event:"INSERT",schema:"public",table:"messages"},payload=>{
+
+  const div=document.createElement("div");
+  div.innerText=payload.new.text;
+
+  document.getElementById("chatBox").appendChild(div);
+
+}).subscribe();
+
+load();
 
 </script>
 
