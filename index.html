@@ -7,403 +7,206 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
 <style>
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Inter;
-}
-
 body{
-  background:#0a0f1c;
+  margin:0;
+  font-family:Arial;
+  background:#0b0f1a;
   color:white;
-  display:flex;
 }
 
-/* SIDEBAR */
-.sidebar{
-  width:250px;
-  height:100vh;
-  position:fixed;
-  background:#0f172a;
-  padding:22px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  border-right:1px solid rgba(255,255,255,0.05);
-}
-
-.logo{
-  font-size:24px;
-  font-weight:900;
-  letter-spacing:-1px;
-}
-
-.logo span{
-  color:#15a8ff;
-}
-
-.tagline{
-  font-size:12px;
-  color:#94a3b8;
-  margin-bottom:10px;
-}
-
-.nav-item{
-  padding:10px;
-  border-radius:10px;
-  cursor:pointer;
-  color:#cbd5e1;
-  font-weight:600;
-  transition:0.2s;
-}
-
-.nav-item:hover{
-  background:#1e293b;
-}
-
-/* MAIN */
-.main{
-  margin-left:250px;
-  width:100%;
-  padding:30px;
-}
-
-/* TOPBAR */
-.topbar{
+/* TOP BAR */
+.top{
+  padding:15px;
+  background:#111827;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:25px;
 }
 
 button{
-  padding:10px 14px;
+  padding:10px 12px;
   border:none;
   border-radius:10px;
   cursor:pointer;
-  font-weight:700;
+  font-weight:bold;
 }
 
-.primary{
-  background:linear-gradient(135deg,#15a8ff,#0066ff);
-  color:white;
+/* LAYOUT */
+.container{
+  padding:20px;
 }
 
-/* PAGES */
-.page{
-  display:none;
-}
-
-.active{
-  display:block;
-}
-
-/* HOME */
-.hero{
-  background:linear-gradient(135deg,#0f172a,#0b1220);
-  padding:30px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,0.06);
-  margin-bottom:20px;
-}
-
-.hero h1{
-  font-size:28px;
-  margin-bottom:10px;
-}
-
-.hero p{
-  color:#94a3b8;
-  line-height:1.6;
-}
-
-/* STREAM CARD */
 .card{
   background:#111827;
-  padding:16px;
-  border-radius:14px;
-  margin:10px 0;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border:1px solid rgba(255,255,255,0.06);
-}
-
-.badge{
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:12px;
-  background:#ff2d55;
-  font-weight:700;
-}
-
-/* INFO BOX */
-.info-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-  margin-top:20px;
-}
-
-.info-box{
-  background:#0f172a;
-  padding:16px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,0.05);
-}
-
-.info-box h3{
-  margin-bottom:6px;
-}
-
-.info-box p{
-  font-size:13px;
-  color:#94a3b8;
-}
-
-/* LOGIN */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-box{
-  background:#111827;
-  padding:20px;
-  border-radius:14px;
-  width:320px;
+  padding:15px;
+  border-radius:12px;
+  margin-top:10px;
 }
 
 input{
-  width:100%;
   padding:10px;
-  margin:8px 0;
   border-radius:8px;
   border:none;
-  background:#0b1220;
-  color:white;
+  margin:5px 0;
+  width:200px;
 }
 
-.small{
-  font-size:12px;
-  color:#94a3b8;
+video{
+  width:100%;
+  max-width:600px;
+  border-radius:12px;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-
-  <div class="logo">Crowd<span>Cast</span></div>
-  <div class="tagline">Live Sports from the Crowd</div>
-
-  <div class="nav-item" onclick="showPage('home')">🏠 Home</div>
-  <div class="nav-item" onclick="showPage('streams')">🔴 Live Games</div>
-  <div class="nav-item" onclick="showPage('create')">🎥 Go Live</div>
-  <div class="nav-item" onclick="openLogin()">👤 Login</div>
-
+<div class="top">
+  <b>CrowdCast</b>
+  <div>
+    <button onclick="mode='viewer'">👀 Watch</button>
+    <button onclick="mode='streamer'">🎥 Go Live</button>
+  </div>
 </div>
 
-<!-- MAIN -->
-<div class="main">
+<div class="container">
 
-  <div class="topbar">
-    <h2 id="title">Home</h2>
-    <button class="primary" onclick="logout()">Logout</button>
-  </div>
+<!-- STREAMER -->
+<div id="streamerBox" class="card" style="display:none;">
+  <h2>🎥 Stream starten</h2>
 
-  <!-- HOME -->
-  <div id="home" class="page active">
+  <input id="room" placeholder="Room Name">
+  <br>
 
-    <div class="hero">
-      <h1>Watch Sports from the Crowd 🎥</h1>
-      <p>
-        CrowdCast ist eine neue Sport-Streaming-Plattform, auf der echte Fans direkt aus dem Stadion live senden.
-        Keine Studio-Kameras – nur echte Emotionen aus der Kurve.
-      </p>
-    </div>
+  <video id="localVideo" autoplay muted></video>
+  <br><br>
 
-    <div class="info-grid">
-
-      <div class="info-box">
-        <h3>📱 Live aus dem Stadion</h3>
-        <p>Fans streamen direkt aus dem Stadion und zeigen das Spiel aus ihrer Perspektive.</p>
-      </div>
-
-      <div class="info-box">
-        <h3>🔴 Echtzeit</h3>
-        <p>Alle Streams laufen live ohne Verzögerung wie bei klassischen TV-Sendern.</p>
-      </div>
-
-      <div class="info-box">
-        <h3>👥 Community</h3>
-        <p>Folge deinen Lieblings-Fans und erlebe Spiele gemeinsam mit anderen.</p>
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- STREAMS -->
-  <div id="streams" class="page">
-
-    <h2>Live Games 🔴</h2>
-    <p class="small">Streams von echten Fans aus Stadien weltweit</p>
-
-    <div id="streamsContainer"></div>
-
-  </div>
-
-  <!-- CREATE -->
-  <div id="create" class="page">
-
-    <div class="hero">
-      <h2>Go Live 🎥</h2>
-      <p>Starte einen Stream direkt aus dem Stadion oder vom Handy.</p>
-      <br>
-      <button class="primary" onclick="createStream()">Stream starten</button>
-    </div>
-
-  </div>
-
+  <button onclick="startStream()">Start</button>
 </div>
 
-<!-- LOGIN -->
-<div class="modal" id="loginModal">
-  <div class="modal-box">
+<!-- VIEWER -->
+<div id="viewerBox" class="card" style="display:none;">
+  <h2>👀 Stream ansehen</h2>
 
-    <h3>Login</h3>
-    <p class="small">Zugang zu Streams & Creator Tools</p>
+  <input id="viewRoom" placeholder="Room Name">
+  <br><br>
 
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Passwort">
+  <button onclick="startView()">Join</button>
 
-    <button class="primary" onclick="signIn()">Login</button>
-    <button onclick="signUp()">Register</button>
-    <button onclick="closeLogin()">Close</button>
+  <br><br>
+  <video id="remoteVideo" autoplay></video>
+</div>
 
-  </div>
 </div>
 
 <script>
 
-/* SUPABASE */
 const supabaseUrl = "https://ujtzhllmkclhibybfhae.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* NAV */
-function showPage(page){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(page).classList.add('active');
-  document.getElementById('title').innerText = page.toUpperCase();
+let mode = "viewer";
+let pc;
+let stream;
 
-  if(page === "streams"){
-    loadStreams();
-  }
-}
+/* UI SWITCH */
+setInterval(()=>{
+  document.getElementById("streamerBox").style.display = mode==="streamer"?"block":"none";
+  document.getElementById("viewerBox").style.display = mode==="viewer"?"block":"none";
+},100);
 
-/* LOGIN */
-function openLogin(){
-  document.getElementById("loginModal").style.display = "flex";
-}
+/* =======================
+   STREAMER
+======================= */
+async function startStream(){
 
-function closeLogin(){
-  document.getElementById("loginModal").style.display = "none";
-}
+  const room = document.getElementById("room").value;
 
-/* AUTH */
-async function signIn(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { error } = await supabaseClient.auth.signInWithPassword({
-    email, password
+  stream = await navigator.mediaDevices.getUserMedia({
+    video:true,
+    audio:true
   });
 
-  if(error) alert(error.message);
-  else closeLogin();
-}
+  document.getElementById("localVideo").srcObject = stream;
 
-async function signUp(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { error } = await supabaseClient.auth.signUp({
-    email, password
+  pc = new RTCPeerConnection({
+    iceServers:[{urls:"stun:stun.l.google.com:19302"}]
   });
 
-  if(error) alert(error.message);
-  else alert("Account erstellt 🚀");
+  stream.getTracks().forEach(t=>pc.addTrack(t,stream));
+
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  await supabase.from("signals").insert([{
+    room,
+    sender:"streamer",
+    data:offer
+  }]);
+
+  pc.onicecandidate = async (e)=>{
+    if(e.candidate){
+      await supabase.from("signals").insert([{
+        room,
+        sender:"streamer",
+        data:e.candidate
+      }]);
+    }
+  };
+
+  alert("Live gestartet 🔴");
 }
 
-async function logout(){
-  await supabaseClient.auth.signOut();
-}
+/* =======================
+   VIEWER
+======================= */
+async function startView(){
 
-/* STREAMS */
-async function createStream(){
+  const room = document.getElementById("viewRoom").value;
 
-  const title = prompt("Stream Titel:");
-  const description = prompt("Beschreibung:");
+  pc = new RTCPeerConnection({
+    iceServers:[{urls:"stun:stun.l.google.com:19302"}]
+  });
 
-  const { data: user } = await supabaseClient.auth.getUser();
+  pc.ontrack = (e)=>{
+    document.getElementById("remoteVideo").srcObject = e.streams[0];
+  };
 
-  if(!user.user){
-    alert("Bitte einloggen");
+  pc.onicecandidate = async (e)=>{
+    if(e.candidate){
+      await supabase.from("signals").insert([{
+        room,
+        sender:"viewer",
+        data:e.candidate
+      }]);
+    }
+  };
+
+  let {data} = await supabase
+    .from("signals")
+    .select("*")
+    .eq("room",room)
+    .eq("sender","streamer")
+    .limit(1);
+
+  if(!data.length){
+    alert("Kein Stream aktiv");
     return;
   }
 
-  await supabaseClient.from("streams").insert([{
-    title,
-    description,
-    user_id: user.user.id,
-    is_live: true
+  await pc.setRemoteDescription(new RTCSessionDescription(data[0].data));
+
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+
+  await supabase.from("signals").insert([{
+    room,
+    sender:"viewer",
+    data:answer
   }]);
 
-  loadStreams();
-}
-
-async function loadStreams(){
-
-  const { data } = await supabaseClient
-    .from("streams")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  const container = document.getElementById("streamsContainer");
-  container.innerHTML = "";
-
-  data.forEach(s => {
-
-    const div = document.createElement("div");
-    div.className = "card";
-
-    div.innerHTML = `
-      <div>
-        <h3>${s.title}</h3>
-        <p style="color:#94a3b8">${s.description || ""}</p>
-      </div>
-
-      <div class="badge">
-        ${s.is_live ? "LIVE 🔴" : "OFFLINE"}
-      </div>
-    `;
-
-    container.appendChild(div);
-  });
+  alert("Verbunden 👀");
 }
 
 </script>
