@@ -2,264 +2,138 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CrowdCast MVP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CrowdCast</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, Arial;
     }
 
-    body{
-      background:#0b0f1a;
-      color:#fff;
+    body {
+      background: #0b0f1a;
+      color: white;
     }
 
-    .bg{
-      position:fixed;
-      width:500px;
-      height:500px;
-      background:radial-gradient(circle,rgba(0,200,255,.25),transparent 60%);
-      filter:blur(60px);
-      top:-150px;
-      left:-150px;
-      z-index:0;
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      background: #111827;
+      align-items: center;
     }
 
-    header{
-      display:flex;
-      justify-content:space-between;
-      padding:20px 40px;
-      position:relative;
-      z-index:2;
+    .logo {
+      font-weight: bold;
+      font-size: 18px;
     }
 
-    .logo{
-      font-weight:700;
-      font-size:20px;
+    button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      background: #0072ff;
+      color: white;
+      cursor: pointer;
     }
 
-    nav a{
-      color:#aaa;
-      margin-left:15px;
-      text-decoration:none;
-      cursor:pointer;
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
     }
 
-    nav a:hover{
-      color:#fff;
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
     }
 
-    .hero{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:70px 40px;
-      position:relative;
-      z-index:2;
-      gap:40px;
+    .hero p {
+      color: #aaa;
     }
 
-    .hero h1{
-      font-size:48px;
-      line-height:1.1;
+    .hidden {
+      display: none;
     }
 
-    .hero p{
-      margin-top:15px;
-      color:#aaa;
-      font-size:16px;
+    .dashboard {
+      padding: 40px;
     }
 
-    .btn{
-      display:inline-block;
-      margin-top:25px;
-      padding:12px 18px;
-      border-radius:10px;
-      background:linear-gradient(90deg,#00c6ff,#0072ff);
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      cursor:pointer;
+    .card {
+      background: #111827;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
     }
 
-    .stream-box{
-      width:360px;
-      height:220px;
-      border-radius:16px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.1);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
     }
 
-    iframe{
-      width:100%;
-      height:100%;
-      border:none;
+    .modal-box {
+      background: #111827;
+      padding: 20px;
+      border-radius: 12px;
+      width: 300px;
     }
 
-    .pricing{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:20px;
-      padding:60px 40px;
-      position:relative;
-      z-index:2;
-    }
-
-    .card{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.1);
-      border-radius:14px;
-      padding:20px;
-    }
-
-    .price{
-      font-size:26px;
-      margin:10px 0;
-    }
-
-    ul{
-      color:#aaa;
-      font-size:14px;
-      padding-left:18px;
-    }
-
-    footer{
-      text-align:center;
-      padding:30px;
-      color:#555;
-    }
-
-    /* LOGIN MODAL */
-    .modal{
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:rgba(0,0,0,0.7);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:10;
-    }
-
-    .modal-content{
-      background:#111827;
-      padding:30px;
-      border-radius:16px;
-      width:320px;
-      border:1px solid rgba(255,255,255,0.1);
-    }
-
-    input{
-      width:100%;
-      padding:10px;
-      margin:10px 0;
-      border-radius:8px;
-      border:none;
-      outline:none;
-    }
-
-    button{
-      width:100%;
-      padding:10px;
-      border:none;
-      border-radius:8px;
-      background:linear-gradient(90deg,#00c6ff,#0072ff);
-      color:#fff;
-      font-weight:600;
-      cursor:pointer;
-      margin-top:10px;
-    }
-
-    @media(max-width:768px){
-      .hero{
-        flex-direction:column;
-        text-align:center;
-      }
-      .pricing{
-        grid-template-columns:1fr;
-      }
+    input {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
     }
   </style>
 </head>
-<body>
 
-<div class="bg"></div>
+<body>
 
 <header>
   <div class="logo">CrowdCast</div>
-  <nav>
-    <a onclick="openLogin()">Login</a>
-  </nav>
+
+  <div>
+    <button onclick="openLogin()" id="loginBtn">Login</button>
+    <button onclick="logout()" id="logoutBtn" class="hidden">Logout</button>
+  </div>
 </header>
 
-<section class="hero">
-  <div>
-    <h1>Live Sports. <br> Simple & Smart.</h1>
-    <p>Eine einfache Plattform für Sport-Streams mit Zukunfts-KI Funktionen.</p>
-    <div class="btn" onclick="openLogin()">Jetzt starten</div>
-  </div>
-
-  <div class="stream-box">
-    <iframe src="https://www.youtube.com/embed/live_stream?channel=UCNA5zW1Y0t8Q5z7Q" allowfullscreen></iframe>
-  </div>
+<section class="hero" id="home">
+  <h1>Live Sports Plattform</h1>
+  <p>Streams, Community & AI Features (Coming Soon)</p>
 </section>
 
-<section class="pricing">
+<section class="dashboard hidden" id="dashboard">
+  <h2>Dashboard</h2>
 
   <div class="card">
-    <h3>Free</h3>
-    <div class="price">0 €</div>
-    <ul>
-      <li>1080p Streaming</li>
-      <li>Videos ansehen</li>
-    </ul>
+    Du bist eingeloggt 🚀
   </div>
 
   <div class="card">
-    <h3>Premium</h3>
-    <div class="price">6 € / Monat</div>
-    <ul>
-      <li>Keine Werbung</li>
-      <li>Bessere Qualität</li>
-      <li>KI Features coming soon</li>
-    </ul>
+    Hier kommen später Streams, KI Highlights und Premium Features.
   </div>
-
-  <div class="card">
-    <h3>Premium Plus</h3>
-    <div class="price">12 € / Monat</div>
-    <ul>
-      <li>4K Streaming</li>
-      <li>Streams speichern</li>
-      <li>KI Highlights coming soon</li>
-    </ul>
-  </div>
-
 </section>
-
-<footer>
-  © 2026 CrowdCast MVP
-</footer>
 
 <!-- LOGIN MODAL -->
 <div class="modal" id="loginModal">
-  <div class="modal-content">
+  <div class="modal-box">
     <h3>Login</h3>
+
     <input id="email" placeholder="Email" />
     <input id="password" type="password" placeholder="Passwort" />
-    <button onclick="openLogin()">Login</button>
+
     <button onclick="signUp()">Registrieren</button>
     <button onclick="signIn()">Einloggen</button>
     <button onclick="closeLogin()">Schließen</button>
@@ -269,31 +143,76 @@
 <script>
 const supabaseUrl = "https://ujtzhllmkclhibybfhae.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// LOGIN UI
 function openLogin(){
-  document.getElementById("loginModal").style.display="flex";
+  document.getElementById("loginModal").style.display = "flex";
 }
 
 function closeLogin(){
-  document.getElementById("loginModal").style.display="none";
+  document.getElementById("loginModal").style.display = "none";
 }
 
+// REGISTER
 async function signUp(){
-  const email=document.getElementById("email").value;
-  const password=document.getElementById("password").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  alert(error ? error.message : "Account erstellt!");
+  const { error } = await supabaseClient.auth.signUp({ email, password });
+
+  if(error){
+    alert(error.message);
+  } else {
+    alert("Account erstellt!");
+  }
 }
 
+// LOGIN
 async function signIn(){
-  const email=document.getElementById("email").value;
-  const password=document.getElementById("password").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  alert(error ? error.message : "Eingeloggt!");
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    alert(error.message);
+  } else {
+    updateUI();
+    closeLogin();
+  }
 }
+
+// LOGOUT
+async function logout(){
+  await supabaseClient.auth.signOut();
+  updateUI();
+}
+
+// UI SWITCH
+async function updateUI(){
+  const { data } = await supabaseClient.auth.getUser();
+
+  if(data.user){
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    document.getElementById("loginBtn").classList.add("hidden");
+    document.getElementById("logoutBtn").classList.remove("hidden");
+  } else {
+    document.getElementById("home").classList.remove("hidden");
+    document.getElementById("dashboard").classList.add("hidden");
+
+    document.getElementById("loginBtn").classList.remove("hidden");
+    document.getElementById("logoutBtn").classList.add("hidden");
+  }
+}
+
+updateUI();
 </script>
 
 </body>
