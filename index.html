@@ -1,152 +1,140 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CrowdCast</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrowdCast</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui, Arial;
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
-    body {
-      background: #0b0f1a;
-      color: white;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Inter;
+  background:#040814;
+  color:white;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px;
-      background: #111827;
-      align-items: center;
-    }
+.nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:20px 7%;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+}
 
-    .logo {
-      font-weight: bold;
-      font-size: 18px;
-    }
+.logo{
+  font-weight:900;
+  font-size:22px;
+}
 
-    button {
-      padding: 10px 14px;
-      border: none;
-      border-radius: 8px;
-      background: #0072ff;
-      color: white;
-      cursor: pointer;
-    }
+.nav-right a{
+  margin-left:15px;
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+}
 
-    .hero {
-      padding: 60px 20px;
-      text-align: center;
-    }
+.btn{
+  padding:10px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  border:none;
+  font-weight:700;
+}
 
-    .hero h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
-    }
+.primary{background:#15a8ff;color:white;}
 
-    .hero p {
-      color: #aaa;
-    }
+.hero{
+  padding:140px 7%;
+  text-align:center;
+}
 
-    .hidden {
-      display: none;
-    }
+h1{
+  font-size:4rem;
+}
 
-    .dashboard {
-      padding: 40px;
-    }
+.hidden{display:none;}
 
-    .card {
-      background: #111827;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
 
-    /* MODAL */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
+.modal-box{
+  background:#111;
+  padding:20px;
+  border-radius:12px;
+  width:300px;
+}
 
-    .modal-box {
-      background: #111827;
-      padding: 20px;
-      border-radius: 12px;
-      width: 300px;
-    }
-
-    input {
-      width: 100%;
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-    }
-  </style>
+input{
+  width:100%;
+  margin:8px 0;
+  padding:10px;
+}
+</style>
 </head>
 
 <body>
 
-<header>
+<!-- NAV -->
+<div class="nav">
   <div class="logo">CrowdCast</div>
 
-  <div>
-    <button onclick="openLogin()" id="loginBtn">Login</button>
-    <button onclick="logout()" id="logoutBtn" class="hidden">Logout</button>
+  <div class="nav-right">
+    <a href="#" onclick="openLogin()">Login</a>
+    <a href="#" id="logoutBtn" class="hidden" onclick="logout()">Logout</a>
   </div>
-</header>
+</div>
 
-<section class="hero" id="home">
-  <h1>Live Sports Plattform</h1>
-  <p>Streams, Community & AI Features (Coming Soon)</p>
-</section>
+<!-- HERO -->
+<div class="hero" id="home">
+  <h1>Feel the Crowd</h1>
+  <p>Live Sports aus der Fan-Perspektive</p>
+  <button class="btn primary" onclick="openLogin()">Get Started</button>
+</div>
 
-<section class="dashboard hidden" id="dashboard">
-  <h2>Dashboard</h2>
-
-  <div class="card">
-    Du bist eingeloggt 🚀
-  </div>
-
-  <div class="card">
-    Hier kommen später Streams, KI Highlights und Premium Features.
-  </div>
-</section>
+<!-- DASHBOARD -->
+<div class="hero hidden" id="dashboard">
+  <h1>Dashboard</h1>
+  <p>Du bist eingeloggt 🚀</p>
+</div>
 
 <!-- LOGIN MODAL -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
     <h3>Login</h3>
 
-    <input id="email" placeholder="Email" />
-    <input id="password" type="password" placeholder="Passwort" />
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Passwort">
 
-    <button onclick="signUp()">Registrieren</button>
-    <button onclick="signIn()">Einloggen</button>
-    <button onclick="closeLogin()">Schließen</button>
+    <button class="btn primary" onclick="signUp()">Registrieren</button>
+    <button class="btn primary" onclick="signIn()">Einloggen</button>
+    <button class="btn" onclick="closeLogin()">Schließen</button>
   </div>
 </div>
 
 <script>
+
+// 🔑 SUPABASE EINTRAGEN
 const supabaseUrl = "https://ujtzhllmkclhibybfhae.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqdHpobGxta2NsaGlieWJmaGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODU2NDQsImV4cCI6MjA5NDE2MTY0NH0.3hAL7y3QgnYLZEL3lSx2Dn9ssWkukdOvPFRej-RhYH8";
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// LOGIN UI
+// UI
 function openLogin(){
   document.getElementById("loginModal").style.display = "flex";
 }
@@ -160,7 +148,10 @@ async function signUp(){
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const { error } = await supabaseClient.auth.signUp({ email, password });
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
 
   if(error){
     alert(error.message);
@@ -200,19 +191,16 @@ async function updateUI(){
   if(data.user){
     document.getElementById("home").classList.add("hidden");
     document.getElementById("dashboard").classList.remove("hidden");
-
-    document.getElementById("loginBtn").classList.add("hidden");
     document.getElementById("logoutBtn").classList.remove("hidden");
   } else {
     document.getElementById("home").classList.remove("hidden");
     document.getElementById("dashboard").classList.add("hidden");
-
-    document.getElementById("loginBtn").classList.remove("hidden");
     document.getElementById("logoutBtn").classList.add("hidden");
   }
 }
 
 updateUI();
+
 </script>
 
 </body>
